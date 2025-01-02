@@ -12,8 +12,9 @@ class Queue:
         self.max_length = max_length
     
     def __reduce_queue(self, func, accumulator = None):
-        """Helper method, is used by other methods. Performs a function for each element of the queue.
-            Returns some value, which depends of the function. The return value is stored in the accumaltor variable.
+        """Helper method, is used by other methods. Calls a function for each element of the queue.
+            The function passed must have two arguments.
+            Returns some value, which depends on the function. The return value is stored in the accumaltor variable.
             If the accumulator is not given, it is self.start."""
 
         current_node = self.start
@@ -39,6 +40,7 @@ class Queue:
     
     def Show(self) -> None:
         """Displays the contents of the queue."""
+        print()
         self.__reduce_queue(lambda acc, el: print(el.data))
         if self.IsEmpty():
             print('The queue is empty.')
@@ -57,8 +59,10 @@ class Queue:
             new_node = Node(data, self.start)
             self.start = new_node
     
-    def Dequeue(self):
-        """Removes the element at self.finish from the queue and returns it."""
+    def Dequeue(self) -> Node | None:
+        """Removes the element at self.finish from the queue and returns it.
+            The second to last element becomes the new self.finish.
+            If the queue is empty, returns None."""
 
         if self.IsEmpty():
             print('The queue is empty.')
@@ -68,10 +72,9 @@ class Queue:
             value = self.start.data
             self.start = None
             self.finish = None
-            return value
-        
-        second_to_last = self.__reduce_queue(lambda acc, el: el if el.next_node is self.finish else acc)
-        value = self.finish.data
-        second_to_last.next_node = None
-        self.finish = second_to_last
+        else: 
+            second_to_last = self.__reduce_queue(lambda acc, el: el if el.next_node is self.finish else acc)
+            value = self.finish.data
+            second_to_last.next_node = None
+            self.finish = second_to_last
         return value
